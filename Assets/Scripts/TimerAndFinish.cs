@@ -5,15 +5,20 @@ using Unity.UI;
 
 public class TimerAndFinish : MonoBehaviour
 {
+    int circels = -1;
+    bool gameStarted = false;
+    public TMPro.TMP_Text circelsText;
     private float startTime;
     private bool isRunning;
     public TMPro.TMP_Text timerText;
+    bool firstTrigger = false;
+    bool secondTrigger = false;
+    bool thirdTrigger = false;
+    bool haveCircels = false;
 
     void Start()
     {
-        // Инициализация времени при старте скрипта
-        startTime = Time.time;
-        isRunning = true;
+
     }
     void Update()
     {
@@ -30,6 +35,44 @@ public class TimerAndFinish : MonoBehaviour
             // Обновляем текст
             timerText.text = $"{minutes}:{seconds}.{milliseconds}";
         }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("finish") && (firstTrigger = false) && (secondTrigger = false) && (thirdTrigger = false) && (haveCircels = false) && (gameStarted = false))
+        {
+            gameStarted = true;
+        }
+
+        if(other.gameObject.CompareTag("trigger1"))
+        {
+            firstTrigger = true;
+        }
+
+        if(other.gameObject.CompareTag("trigger2"))
+        {
+            secondTrigger = true;
+        }
+
+        if(other.gameObject.CompareTag("trigger3"))
+        {
+            thirdTrigger = true;
+        }
+
+        if(other.gameObject.CompareTag("finish") && (firstTrigger = true) && (secondTrigger = true) && (thirdTrigger = true))
+        {
+            // Инициализация времени при старте скрипта
+            startTime = Time.time;
+            isRunning = true;
+            circels++;
+            haveCircels = true;
+            firstTrigger = false;
+            secondTrigger = false;
+            thirdTrigger = false;
+            circels.ToString();
+            circelsText.text = $"{circels}";
+        }
+
     }
 
     // Опциональные методы для управления таймером
