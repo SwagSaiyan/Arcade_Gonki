@@ -15,24 +15,42 @@ public class TimerAndFinish : MonoBehaviour
     bool secondTrigger = false;
     bool thirdTrigger = false;
     bool haveCircels = false;
+    bool gameComplited = false;
+    public GameObject barrier;
+    public GameObject barrier2;
+    public GameObject barrier3;
+    public GameObject barrier4;
+    float elapsedTime;
 
-    void Start()
+    private void Start()
     {
-
+        startTime = Time.time;
+        isRunning = true;
     }
-    void Update()
+    public  void Update()
     {
+        if(circels == 3)
+        {
+            gameComplited = true;
+            isRunning=false;
+        }
+
+        if (gameComplited)
+        {
+            Destroy(barrier);
+            Destroy(barrier2);
+            Destroy(barrier3);
+            Destroy(barrier4);
+        }
+
         if (isRunning)
         {
-            // Вычисляем прошедшее время
             float elapsedTime = Time.time - startTime;
 
-            // Форматируем время в минуты:секунды.миллисекунды
             string minutes = ((int)elapsedTime / 60).ToString("00");
             string seconds = (elapsedTime % 60).ToString("00");
             string milliseconds = ((elapsedTime * 1000) % 1000).ToString("000");
 
-            // Обновляем текст
             timerText.text = $"{minutes}:{seconds}.{milliseconds}";
         }
     }
@@ -42,6 +60,7 @@ public class TimerAndFinish : MonoBehaviour
         if (other.gameObject.CompareTag("finish") && (firstTrigger = false) && (secondTrigger = false) && (thirdTrigger = false) && (haveCircels = false) && (gameStarted = false))
         {
             gameStarted = true;
+            haveCircels = true;
         }
 
         if(other.gameObject.CompareTag("trigger1"))
@@ -59,13 +78,10 @@ public class TimerAndFinish : MonoBehaviour
             thirdTrigger = true;
         }
 
-        if(other.gameObject.CompareTag("finish") && (firstTrigger = true) && (secondTrigger = true) && (thirdTrigger = true))
+        if(other.gameObject.CompareTag("finish") && (firstTrigger = true) && (secondTrigger = true) && (thirdTrigger = true) && (haveCircels = true))
         {
-            // Инициализация времени при старте скрипта
-            startTime = Time.time;
             isRunning = true;
             circels++;
-            haveCircels = true;
             firstTrigger = false;
             secondTrigger = false;
             thirdTrigger = false;
@@ -75,7 +91,7 @@ public class TimerAndFinish : MonoBehaviour
 
     }
 
-    // Опциональные методы для управления таймером
+
     public void PauseTimer()
     {
         isRunning = false;
@@ -84,7 +100,7 @@ public class TimerAndFinish : MonoBehaviour
     public void ResumeTimer()
     {
         isRunning = true;
-        startTime = Time.time - (Time.time - startTime); // Корректируем startTime для продолжения
+        startTime = Time.time - (Time.time - startTime); 
     }
 
     public void ResetTimer()
